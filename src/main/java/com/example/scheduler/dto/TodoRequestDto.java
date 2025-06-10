@@ -4,6 +4,7 @@ import com.example.scheduler.domain.Todo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,5 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TodoRequestDto {
     private String content;
-    private String dueDate;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate dueDate;
+
 }

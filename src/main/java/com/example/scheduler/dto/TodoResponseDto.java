@@ -24,4 +24,8 @@ public class TodoResponseDto {
         this.isCompleted = todo.isCompleted();
         this.createdAt = todo.getCreatedAt();
     }
+    public static TodoResponseDto from(Todo todo) {
+        return new TodoResponseDto(todo);
+    }
+
 }

@@ -15,6 +15,9 @@ public class UserSignupDto {
     @Size(min = 6, max = 15, message = "비밀번호는 6자 이상, 15자 이하로 입력해야 합니다.")
     private String password;
 
+    @Size(min = 6, max = 15, message = "비밀번호 확인도 6자 이상, 15자 이하로 입력해야 합니다.")
+    private String passwordCheck;
+
     @Email(message = "올바른 이메일 형식이어야 합니다.")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
