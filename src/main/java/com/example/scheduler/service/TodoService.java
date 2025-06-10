@@ -1,6 +1,5 @@
 package com.example.scheduler.service;
 
-import com.example.scheduler.domain.PointHistory;
 import com.example.scheduler.domain.Todo;
 import com.example.scheduler.domain.User;
 import com.example.scheduler.dto.TodoRequestDto;
@@ -24,32 +23,30 @@ public class TodoService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    // 일정 생성
+    // 일정 생성 + 연속 등록 및 점수 계산
     @Transactional
     public TodoResponseDto createTodo(Long userId, TodoRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
 
-        LocalDate dueDate = LocalDate.parse(requestDto.getDueDate());
+        LocalDate dueDate = requestDto.getDueDate();
 
-        // ✅ 오늘 해당 유저가 등록한 일정이 없을 경우만 streak 보상
+        //오늘이 처음 등록인가?
         boolean isFirstTodoToday = todoRepository.findByUserIdAndDueDate(userId, dueDate).isEmpty();
-
-        // ✅ streak 관리: 어제 일정 등록 여부 체크
+        //어제 등록된 일정이 있는가?
         boolean hasTodoYesterday = !todoRepository.findByUserIdAndDueDate(userId, dueDate.minusDays(1)).isEmpty();
 
+        //연속 등록 처리
         if (isFirstTodoToday) {
             if (hasTodoYesterday) {
                 user.setStreak(user.getStreak() + 1);
             } else {
-                user.setStreak(1); // streak 초기화 후 시작
+                user.setStreak(1);
             }
-
-            // ✅ streak 점수 부여
             userService.addScore(user, user.getStreak());
         }
 
-        // 일정 저장
+        //일정 저장
         Todo todo = new Todo();
         todo.setUser(user);
         todo.setContent(requestDto.getContent());
@@ -58,13 +55,10 @@ public class TodoService {
         todo.setCreatedAt(LocalDateTime.now());
 
         Todo savedTodo = todoRepository.save(todo);
-
         return new TodoResponseDto(savedTodo);
     }
 
-
-
-    // 일정 완료 처리
+    // 일정 완료 처리 + 점수 계산
     @Transactional
     public void markAsDone(Long todoId) {
         Todo todo = todoRepository.findById(todoId)
@@ -76,34 +70,29 @@ public class TodoService {
 
         User user = todo.getUser();
 
-        // 1. 오늘 완료 일정 수 계산
+        //오늘 완료된 투두 개수에 따라 점수 결정
         long todayCompleted = todoRepository.findByUserIdAndDueDate(user.getId(), LocalDate.now())
-                .stream()
-                .filter(Todo::isCompleted)
-                .count();
+                .stream().filter(Todo::isCompleted).count();
 
         int baseScore;
         if (todayCompleted <= 5) baseScore = 2;
         else if (todayCompleted <= 10) baseScore = 4;
         else baseScore = 6;
 
-        // 2. streak 점수 추가
-        int streak = user.getStreak(); // 연속 등록일 수
+        int streak = user.getStreak();
         int totalScore = baseScore + streak;
 
-        // 3. 점수 및 레벨 반영
         userService.addScore(user, totalScore);
     }
 
-
-    // 일정 수정
+    // 일정 내용 및 날짜 수정
     @Transactional
     public TodoResponseDto updateTodo(Long todoId, TodoRequestDto requestDto) {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new RuntimeException("해당 일정을 찾을 수 없습니다."));
 
         todo.setContent(requestDto.getContent());
-        todo.setDueDate(LocalDate.parse(requestDto.getDueDate()));
+        todo.setDueDate(requestDto.getDueDate());
         return new TodoResponseDto(todo);
     }
 
@@ -120,11 +109,27 @@ public class TodoService {
                 .collect(Collectors.toList());
     }
 
-    // 미완료 일정 조회 (날짜별 그룹핑)
+    // 미완료 일정 조회
     public List<TodoResponseDto> getPendingTodos(Long userId) {
         return todoRepository.findByUserIdAndIsCompletedFalse(userId).stream()
                 .map(TodoResponseDto::new)
                 .collect(Collectors.toList());
     }
-}
 
+    // 홈 화면용 : 오늘/이전까지 완료되지 않은 일정 조회
+    public List<TodoResponseDto> getUnfinishedTodos(Long userId, LocalDate today) {
+        return todoRepository.findByUserIdAndIsCompletedFalseAndDueDateBefore(userId, today).stream()
+                .map(todo -> new TodoResponseDto(todo))  // ← 이 방식으로 안전하게 통일!
+                .collect(Collectors.toList());
+    }
+
+    //일정 완료 상태 토글
+    public void toggleCompleted(Long todoId) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+        todo.setCompleted(!todo.isCompleted());
+        todoRepository.save(todo);
+    }
+
+
+}

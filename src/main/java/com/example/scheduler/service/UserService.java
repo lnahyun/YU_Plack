@@ -1,6 +1,8 @@
 package com.example.scheduler.service;
 
+import com.example.scheduler.dto.TodoResponseDto;
 import com.example.scheduler.dto.UserProfileResponseDto;
+import com.example.scheduler.repository.TodoRepository;
 import com.example.scheduler.repository.UserRepository;
 import com.example.scheduler.domain.User;
 import com.example.scheduler.domain.Level;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,7 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    // 회원가입
+    //사용자 회원가입 처리
     public User register(String username, String password, String email) {
 
         if (userRepository.findByUsername(username).isPresent()) {
@@ -43,7 +46,8 @@ public class UserService {
     }
 
 
-    // 로그인
+
+    //사용자 로그인 처리
     public User login(String username, String password) {
         // 입력값 누락 체크
         if (username == null || username.trim().isEmpty()) {
@@ -67,16 +71,10 @@ public class UserService {
     }
 
 
-    //점수추가 / 레벨 update
+    //사용자 점수 증기 & 레벨 update
     public void addScore(User user, int points) {
         user.setScore(user.getScore() + points);
         updateLevel(user);
-        userRepository.save(user);
-    }
-
-    //연속등록일수
-    public void increaseStreak(User user) {
-        user.setStreak(user.getStreak() + 1); // streak 필드가 필요함
         userRepository.save(user);
     }
 
@@ -93,9 +91,11 @@ public class UserService {
         else                    user.setLevel(Level.FRESHMAN);
     }
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    //사용자 이름 중복 여부 확인
+    public boolean usernameExists(String username) {
+        return userRepository.existsByUsername(username);
     }
+    //사용자 프로필 정보 반환
     public UserProfileResponseDto getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
@@ -107,4 +107,12 @@ public class UserService {
                 user.getStreak()
         );
     }
+
+    //사용자 ID로 User 객체 강제 반환
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+
 }
