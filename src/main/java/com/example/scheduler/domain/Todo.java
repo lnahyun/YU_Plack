@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Setter
-@Getter//확인해볼것
+@Getter
 @Entity
 public class Todo {
     @Id
