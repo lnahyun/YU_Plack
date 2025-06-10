@@ -1,0 +1,32 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container">
+    <div class="register-box">
+        <!-- 왼쪽: 회원가입 유도 -->
+        <div class="login-section">
+            <p>Sign up here!</p>
+            <a th:href="@{/users/register}" class="login-btn">Sign up</a>
+        </div>
+
+        <!-- 오른쪽: 로그인 폼 -->
+        <div class="form-section">
+            <h2>LOG IN</h2>
+            <form th:action="@{/users/login}" method="post">
+                <input type="text" name="username" placeholder="Username" required />
+                <input type="password" name="password" placeholder="Password" required />
+                <button type="submit" class="signup-btn">Log in</button>
+            </form>
+
+            <div th:if="${error}" class="error-box" th:text="${error}"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
