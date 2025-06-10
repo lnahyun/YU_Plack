@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Profile</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="navbar">
+  <a th:href="@{/users/home}" >HOME</a>
+  <a th:href="@{/todos/view(date=${today})}">TO-DO</a>
+
+  <img src="/images/logo.png" alt="Logo" class="nav-logo" />
+
+  <a th:href="@{/todos/pending}">PENDING</a>
+  <a th:href="@{/users/profile}" class="active">PROFILE</a>
+</div>
+<div class="profile-container">
+  <div class="profile-box">
+    <p class="streak">🔥 <span th:text="${user.streak}">0</span>일 연속</p>
+
+    <h1 th:text="${user.username}">Username</h1>
+
+    <p class="level">
+      Lv.<span th:text="${user.level.ordinal() + 1}">1</span>
+      <span th:text="${user.level.displayName}">새내기</span>
+      <span th:text="${user.score} + '점'">0점</span>
+    </p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" th:style="'width:' + ${progressPercent} + '%'"></div>
+    </div>
+
+    <button type="button" class="logout-button" onclick="showLogoutModal()">LOGOUT</button>
+  </div>
+
+<!-- 로그아웃 확인 모달 -->
+<div id="logoutModal" class="modal" style="display:none;">
+  <div class="modal-box">
+    <p>로그아웃하시겠습니까?</p>
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+      <button onclick="hideLogoutModal()" class="cancel-btn">취소</button>
+      <form method="post" action="/users/logout" style="margin:0;">
+        <button type="submit" class="confirm-btn">확인</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'flex';
+  }
+
+  function hideLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>미완료 일정</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<div class="navbar">
+    <a th:href="@{/users/home}" >HOME</a>
+    <a th:href="@{/todos/view(date=${today})}">TO-DO</a>
+
+    <img src="/images/logo.png" alt="Logo" class="nav-logo" />
+
+    <a th:href="@{/todos/pending}" class="active">PENDING</a>
+    <a th:href="@{/users/profile}">PROFILE</a>
+</div>
+
+<div class="pending-container">
+    <div th:if="${pendingTodos != null && !pendingTodos.isEmpty()}">
+        <div th:each="entry : ${pendingTodos}" class="pending-group">
+            <div class="pending-date" th:text="${entry.key}">날짜</div>
+            <ul class="pending-list">
+                <li th:each="todo : ${entry.value}" th:text="${todo.content}" class="pending-item">일정 내용</li>
+            </ul>
+            <hr class="divider"/>
+        </div>
+    </div>
+
+    <div th:if="${pendingTodos == null || pendingTodos.isEmpty()}" class="empty-message">
+        미완료된 일정이 없습니다.
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Home</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" />
+</head>
+<body>
+
+
+<!-- 네비게이션 바 -->
+<div class="navbar">
+  <a th:href="@{/users/home}" class="active">HOME</a>
+  <a th:href="@{/todos/view(date=${today})}">TO-DO</a>
+
+  <img src="/images/logo.png" alt="Logo" class="nav-logo" />
+
+  <a th:href="@{/todos/pending}">PENDING</a>
+  <a th:href="@{/users/profile}">PROFILE</a>
+</div>
+
+
+<!-- 본문 -->
+<div class="container">
+  <!-- 캘린더 -->
+  <div class="calendar-section">
+    <h3>🍀 Calendar Overview</h3>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- 오늘의 일정 / 미완료 일정 -->
+  <div class="todo-section">
+    <div class="todo-box">
+      <h3>📄 Today's TO-DO</h3>
+      <ul>
+        <li th:each="todo : ${todayTodos}" th:text="${todo.content}"></li>
+        <li th:if="${todayTodos.isEmpty()}">오늘 일정이 없습니다.</li>
+      </ul>
+    </div>
+
+    <div class="pending-box">
+      <h3>⚠ PENDING</h3>
+      <ul>
+        <li th:each="todo : ${unfinishedTodos}">
+          <span th:text="${todo.dueDate}"></span><br/>
+          <span class="pending-item" th:text="${todo.content}"></span>
+        </li>
+        <li th:if="${unfinishedTodos.isEmpty()}">미완료 일정이 없습니다.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      height: 'auto'
+    });
+    calendar.render();
+  });
+</script>
+
+</body>
+</html>

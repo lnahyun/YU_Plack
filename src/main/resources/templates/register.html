@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container">
+    <div class="register-box">
+        <div class="form-section">
+            <h2>REGISTER</h2>
+            <form id="signupForm">
+                <input type="email" name="email" id="email" placeholder="Email" required />
+
+                <div class="username-check">
+                    <input type="text" name="username" id="username" placeholder="Username" required />
+                    <button type="button" class="check-btn" onclick="checkUsername()">check</button>
+                </div>
+
+                <input type="password" name="password" id="password" placeholder="Password" required />
+                <input type="password" name="passwordCheck" id="passwordCheck" placeholder="Password Check" required />
+                <button type="submit" class="signup-btn">sign up</button>
+            </form>
+        </div>
+
+        <div class="login-section">
+            <p>Login here!</p>
+            <a th:href="@{/users/login}" class="login-btn">Login</a>
+        </div>
+    </div>
+
+    <!-- 공통 모달창 -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <span id="modal-message">메시지</span>
+            <button class="close-btn" onclick="closeModal()">✖</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 회원가입 버튼 클릭 시 유효성 검사
+    document.getElementById("signupForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const res = await fetch("/users/register", {
+                method: "POST",
+                body: formData
+            });
+
+            const message = await res.text();
+
+            if (!res.ok) {
+                showModal(message);  // 🔥 에러 메시지 모달 출력
+                return;
+            }
+
+            // 성공 시 로그인 페이지로 이동
+            window.location.href = "/users/login";
+        } catch (err) {
+            showModal("서버 오류가 발생했습니다.");
+        }
+    });
+
+    // 유저 이름 중복 체크
+    function checkUsername() {
+        const username = document.getElementById("username").value;
+        if (!username) {
+            showModal("이름을 입력해주세요.");
+            return;
+        }
+
+        fetch(`/users/check?username=${username}`)
+            .then(res => res.text())
+            .then(message => showModal(message))
+            .catch(() => showModal("서버 오류가 발생했습니다."));
+    }
+
+    function showModal(message) {
+        document.getElementById("modal-message").innerText = message;
+        document.getElementById("modal-overlay").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("modal-overlay").style.display = "none";
+    }
+</script>
+</body>
+</html>

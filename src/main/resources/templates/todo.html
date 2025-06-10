@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>To-Do List Page</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+<!-- ✅ 상단 네비게이션 -->
+<div class="navbar">
+    <a th:href="@{/users/home}" >HOME</a>
+    <a th:href="@{/todos/view(date=${today})}" class="active">TO-DO</a>
+
+    <img src="/images/logo.png" alt="Logo" class="nav-logo" />
+
+    <a th:href="@{/todos/pending}">PENDING</a>
+    <a th:href="@{/users/profile}">PROFILE</a>
+</div>
+
+<!-- ✅ 전체 컨테이너 -->
+<div class="todo-container">
+    <div class="todo-header">
+        <button onclick="moveDate(-1)">&#60;</button>
+        <span id="selected-date" class="date-text" th:text="${date}"></span>
+        <input type="text" id="datepicker" style="position: absolute; opacity: 0; pointer-events: none;" />
+        <button onclick="moveDate(1)">&#62;</button>
+    </div>
+
+    <div class="todo-box">
+        <div th:if="${todos.size() > 0}">
+            <div th:each="todo : ${todos}" class="todo-item">
+                <!-- ✅ 체크박스 -->
+                <form th:action="@{/todos/toggle/{id}(id=${todo.id})}" method="post" style="display:inline;">
+                    <input type="hidden" name="date" th:value="${date}" />
+                    <input type="checkbox"
+                           name="completed"
+                           th:checked="${todo.completed}"
+                           onchange="this.form.submit()" />
+                </form>
+
+                <!-- ✅ 인라인 수정 input -->
+                <form th:action="@{/todos/update/{id}(id=${todo.id})}" method="post" class="inline-edit-form">
+                    <input type="text" name="content" th:value="${todo.content}" readonly />
+                    <input type="hidden" name="dueDate" th:value="${date}" />
+                </form>
+
+                <!-- ✅ 수정/삭제 버튼 -->
+                <div class="todo-actions">
+                    <button type="button" onclick="enableEdit(this)">✎</button>
+                    <button type="button" th:onclick="|confirmDelete(${todo.id})|">🗑</button>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${todos.size() == 0}" class="empty-message">등록된 일정이 없습니다.</div>
+
+        <!-- ✅ 추가 input -->
+        <form method="post" th:action="@{/todos/add}" onsubmit="return validateAdd()" class="todo-add">
+            <input type="text" name="content" id="newTodoContent" placeholder="할 일을 입력하세요" />
+            <input type="hidden" name="dueDate" th:value="${date}" />
+            <button type="submit" class="add-btn">ADD</button>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ 모달 -->
+<div id="modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span id="modal-message">모달 메시지</span>
+        <button onclick="closeModal()">✖</button>
+    </div>
+</div>
+
+<script>
+    // ✅ datepicker
+    let datePickerInstance;
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectedDateEl = document.getElementById("selected-date");
+        datePickerInstance = flatpickr("#datepicker", {
+            dateFormat: "Y-m-d",
+            defaultDate: selectedDateEl.innerText,
+            onChange: function (_, dateStr) {
+                location.href = `/todos/view?date=${dateStr}`;
+            },
+            positionElement: selectedDateEl
+        });
+        selectedDateEl.addEventListener("click", function () {
+            datePickerInstance.open();
+        });
+
+        // ✅ 인라인 수정 validation
+        document.querySelectorAll(".inline-edit-form input[name='content']").forEach(input => {
+
+            input.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    const value = input.value.trim();
+                    if (value === "") {
+                        e.preventDefault();
+                        showModal("수정할 내용을 입력해주세요.");
+                        input.focus(); // 유지
+                    } else {
+                        input.form.submit();
+                    }
+                }
+            });
+
+            input.addEventListener("blur", function () {
+                if (!input.readOnly && input.value.trim() === "") {
+                    showModal("내용을 입력해주세요.");
+                }
+            });
+        });
+    });
+
+    // ✅ 날짜 이동
+    function moveDate(offset) {
+        const current = document.getElementById('selected-date').innerText;
+        const date = new Date(current);
+        date.setDate(date.getDate() + offset);
+        const yyyy = date.getFullYear();
+        const mm = ('0' + (date.getMonth() + 1)).slice(-2);
+        const dd = ('0' + date.getDate()).slice(-2);
+        location.href = `/todos/view?date=${yyyy}-${mm}-${dd}`;
+    }
+
+    // ✅ 할 일 추가시 공백 검사
+    function validateAdd() {
+        const input = document.getElementById("newTodoContent").value.trim();
+        if (input === "") {
+            showModal("일정을 입력해주세요.");
+            return false;
+        }
+        return true;
+    }
+
+    // ✅ 삭제 확인
+    function confirmDelete(id) {
+        const date = document.getElementById('selected-date').innerText;
+        if (confirm("해당 일정을 삭제하시겠습니까?")) {
+            location.href = `/todos/delete/${id}?date=${date}`;
+        }
+    }
+
+    // ✅ 수정 활성화
+    function enableEdit(button) {
+        const parent = button.closest(".todo-item");
+        const input = parent.querySelector("input[name='content']");
+        input.removeAttribute("readonly");
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length); // 커서 끝
+    }
+
+    // ✅ 모달
+    function showModal(message) {
+        const modal = document.getElementById("modal");
+        const modalMessage = document.getElementById("modal-message");
+        if (modal && modal.style.display !== "flex") {
+            modalMessage.innerText = message;
+            modal.style.display = "flex";
+        }
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("modal");
+        if (modal) modal.style.display = "none";
+    }
+</script>
+</body>
+</html>
