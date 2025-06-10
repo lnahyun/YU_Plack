@@ -1,0 +1,701 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.register-box {
+    display: flex;
+    width: 700px;
+    height: 400px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.form-section {
+    flex: 1;
+    background-color: #fafafa;
+    padding: 40px;
+}
+
+.login-section {
+    width: 200px;
+    background-color: #dcdcdc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    color: #6cbf3b;
+    margin-bottom: 30px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: transparent;
+    outline: none;
+}
+
+.username-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.check-btn {
+    background-color: white;
+    border: 1px solid #6cbf3b;
+    color: #6cbf3b;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.signup-btn {
+    background-color: #6cbf3b;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    width: 100px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-btn {
+    border: 1px solid #6cbf3b;
+    padding: 6px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: #6cbf3b;
+    font-weight: bold;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-box {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    font-size: 16px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background-color: #f4f4f4;
+    padding: 30px 50px;
+    border-radius: 8px;
+    font-size: 15px;
+    color: black;
+    position: relative;
+    font-weight: 500;
+}
+
+.close-btn {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/*홈화면*/
+/* 전체 컨테이너 레이아웃 */
+.home-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 60px;
+    padding: 50px 80px;
+}
+
+/* 캘린더 박스 */
+.calendar-section {
+    width: 45%;
+    margin-right: 30px;
+    margin-left: 60px;
+}
+
+/* 오른쪽 섹션 전체 */
+.todo-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 50%;
+    margin-left: 30px;
+}
+
+/* 투두 리스트 박스 */
+.todo-box {
+    background: #f2f2f2;
+    border-radius: 10px;
+    padding: 30px 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ✔ PENDING 박스 전용 스타일 */
+.pending-box {
+    background: #f2f2f2;  /* 밝은 회색으로 통일 */
+    border-radius: 10px;
+    padding: 30px 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 공통 스타일 */
+.todo-box h3,
+.pending-box h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* TODO 리스트 */
+.todo-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.todo-box li {
+    font-size: 15px;
+    padding: 5px 0;
+}
+
+/* PENDING 항목 */
+.pending-box .pending-date {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+.pending-box .pending-item {
+    font-size: 14px;
+    color: red;
+    padding-left: 10px;
+}
+
+
+/* todo 부분 */
+/* 기본 설정 */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* 네비게이션 바 */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #7cd35c;
+    padding: 12px 0;
+    position: relative;
+    gap: 40px;
+}
+
+.navbar a.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding-bottom: 4px;
+}
+
+.navbar a.active {
+    border-bottom: 3px solid white;
+}
+
+.nav-logo {
+    height: 32px;
+}
+
+/* 메인 컨테이너 */
+.todo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* 날짜 헤더 */
+.todo-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.todo-header button {
+    background-color: transparent;
+    border: none;
+    font-size: 28px;
+    color: #7cd35c;
+    cursor: pointer;
+}
+
+.date-text {
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.todo-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.todo-actions button {
+    margin-left: 10px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #444;
+}
+
+.todo-actions button:hover {
+    color: #7cd35c;
+}
+
+.empty-message {
+    text-align: center;
+    font-size: 15px;
+    color: #666;
+    margin: 30px 0;
+}
+
+/* 일정 추가 */
+.todo-add {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.todo-add input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.add-btn {
+    background-color: #7cd35c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* 모달 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal-content button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    padding: 10px 16px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.todo-item input[type="checkbox"] {
+    margin-right: 16px;
+}
+
+.todo-content {
+    flex-grow: 1;
+    margin-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.todo-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: 16px;
+}
+
+/* 체크박스 기본 숨김 + 커스텀 */
+.todo-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4CAF50;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+    margin-right: 10px;
+    background-color: white;
+}
+
+.todo-item input[type="checkbox"]:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.todo-item input[type="checkbox"]::after {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    display: none;
+}
+
+.todo-item input[type="checkbox"]:checked::after {
+    display: block;
+}
+
+/*pending*/
+.pending-container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 10px;
+}
+
+.pending-group {
+    margin-bottom: 20px;
+}
+
+.pending-date {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.pending-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.pending-item {
+    font-size: 16px;
+    color: red;
+    margin-bottom: 4px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.empty-message {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 18px;
+    color: #888;
+}
+
+/*프로필*/
+
+/* 프로필 전용 스타일 */
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.profile-box {
+    width: 800px;
+    padding: 60px 50px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+/* streak (🔥 3일 연속) */
+.streak {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Username */
+.profile-box h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 10px 0 30px 0;
+}
+
+/* 레벨 + 점수 */
+.level {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    background-color: #e9e9e9;
+    height: 24px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 60px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #7cd35c;
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+/* Logout 버튼 */
+.logout-button {
+    position: absolute;
+    bottom: 40px;
+    right: 50px;
+    background-color: #7cd35c;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* 로그아웃 모달 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 버튼 */
+.confirm-btn, .cancel-btn {
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+}
+
+.confirm-btn {
+    background-color: #7cd35c;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #ccc;
+    color: black;
+}
+
+
+/* 로고를 네비게이션 바 위에 중앙 정렬 */
+.logo-container {
+    background-color: #7cd35c;
+    text-align: center;
+    padding: 15px 0 5px;
+}
+
+.logo-image {
+    height: 60px;
+}
+/* 네비게이션 바 */
+.navbar {
+    background-color: #7cd35c;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    position: relative;
+}
+
+/* 네비게이션 텍스트 링크 */
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+}
+
+.navbar a.active {
+    border-bottom: 3px solid white;
+}
+
+/* 로고 이미지 중앙 위치 */
+.nav-logo {
+    height: 40px;
+    margin: 0 20px;
+    vertical-align: middle;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-box {
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    width: 300px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
