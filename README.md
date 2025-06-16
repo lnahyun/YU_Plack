@@ -1,6 +1,7 @@
 # Plack
-
 **plan**과 **stack**을 결합한 웹 기반 일정 관리 서비스
+
+![Image](https://github.com/user-attachments/assets/bddc44e1-8765-4eff-8583-d0f1feef8ac4) <br>
 
 ## 기술 스택
 **Backend** <br>
