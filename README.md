@@ -56,6 +56,6 @@ spring:
 
 **4. 접속 확인**
 ```bash
-http://localhost:8080/users/login
+http://localhost:8080/users/register
 ```
 
