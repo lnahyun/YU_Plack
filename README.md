@@ -15,7 +15,6 @@
 
 **Frontend**
 - HTML / CSS / JS (Thymeleaf 기반)
-- Flatpickr
 
 **Infra**
 - AWS EC2 (배포 서버)
